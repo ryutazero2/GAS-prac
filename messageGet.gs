@@ -26,18 +26,26 @@ function getMessage(channelName,msg,ts){
   return findResult !== undefined
 });
 
-  console.log(tsMsgFil);
+  //マッチした値を古い順にソートする　
+  resultSort = tsMsgFil.sort(e => e['ts']).reverse();
 
-  rep = tsMsgFil.filter(e => (e['reply_count'] > 0));
-  if(rep.length === 0){
-    console.log('ok');      //あとで return
-  }
-  //let represult = JSON.parse(UrlFetchApp.fetch(`https://slack.com/api/conversations.replies?channel=${getChannelId(channelName)}&ts=${getRepTs}`, postOptions));
-  //let reply = represult.messages;
-  //let array2 = Object.values(reply);
+  //リプライがあるものはリプライごと result に取得し、リプライがないものはメインメッセージのみ取得する
+  result = [];
+
+  resultSort.forEach(e => { 
+    if (e['reply_count'] > 0){
+      let represult = JSON.parse(UrlFetchApp.fetch(`https://slack.com/api/conversations.replies?channel=${getChannelId(channelName)}&ts=${e.ts}`, postOptions));
+      let reply = represult.messages;
+      result.push(reply);
+    }
+    else {
+      result.push(e);
+    }
+    
+  });
+
+  return result;
   
-  //return array2;
-
 }
 
 //現在時刻からx時間前を取得し、unixtime に変換する
