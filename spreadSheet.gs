@@ -15,9 +15,21 @@ function dataAdd(){
   sheet.getRange('B2').setValues([[data[1]]]);
   sheet.getRange('E2').setValues([[data[2]]]);
 
-  getMessage([data[0]],data[1],[data[2]]);
-  
-  //console.log(getMessage([data[0]],data[1],[data[2]]));
+  dataMsg = (getMessage([data[0]],data[1],[data[2]]));
+
+  dataMsg.forEach(e => {
+    if(e.length !== undefined){
+      //リプライあり
+      e.forEach(f => {
+        console.log(f['text'])
+      })
+      console.log('');
+    }
+    else{
+      //リプライなし
+      console.log(e['text']);
+    }
+    });
 }
 
 
