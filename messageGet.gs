@@ -12,24 +12,26 @@ function getMessage(channelName,msg,ts){
   let messages = result.messages;
   
   //filter 等のメソッドを利用するため配列化する
-  let array = Object.values(messages);
 
   //検索の時間を指定
-  tsfil = array.filter(e => e['ts'] < getTime(ts));
+  tsfil = messages.filter(e => e['ts'] < getTime(ts));
 
   //スプレッドシートのデータを配列化する
   msgArray = msg[0].split(',');
 
-  tsMsgFil = tsfil.filter(e => e['text'] == msgArray[0] || e['text'] == msgArray[1]);
 
-  tsMsgFil.map(e => console.log(e));
+  tsMsgFil = tsfil.filter(e => {
+  //検索結果にマッチしたものは配列のメッセージが返ってきて、他は undefined で返ってくる
+  const findResult = msgArray.find(m => e['text'] === m);
+  return findResult !== undefined
+});
 
-  //rep = tsMsgFil.filter(e => (e['reply_count'] > 0));
+  console.log(tsMsgFil);
 
-  //rep.map(e=> console.log(e));
-
- // getRepTs = rep[0]['ts'];
-
+  rep = tsMsgFil.filter(e => (e['reply_count'] > 0));
+  if(rep.length === 0){
+    console.log('ok');      //あとで return
+  }
   //let represult = JSON.parse(UrlFetchApp.fetch(`https://slack.com/api/conversations.replies?channel=${getChannelId(channelName)}&ts=${getRepTs}`, postOptions));
   //let reply = represult.messages;
   //let array2 = Object.values(reply);
